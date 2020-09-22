@@ -1,0 +1,22 @@
+version: "3"
+networks:
+  app-tier:
+    driver: bridge
+services:
+  phpfpm:
+    image: "bitnami/php-fpm:latest"
+    networks:
+      - "app-tier"
+    volumes:
+      - "./src/app:/app"
+  nginx:
+    image: "bitnami/nginx:latest"
+    depends_on:
+      - "phpfpm"
+    networks:
+      - "app-tier"
+    ports:
+      - "80:8070"
+      - "443:443"
+    volumes:
+      - "./src/server_block.conf:/opt/bitnami/nginx/conf/server_blocks/yourapp.conf"
